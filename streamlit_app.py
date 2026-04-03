@@ -709,7 +709,8 @@ def main():
 
     render_hero()
     render_stats(listings)
-    render_deployment_notes()
+    render_transaction_steps()
+
 
     form_tab, listings_tab = st.tabs(["刊登商品", "商品列表"])
 
