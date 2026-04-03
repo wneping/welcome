@@ -684,14 +684,15 @@ def render_listing_board(listings):
         st.divider()
 
 
-def render_deployment_notes():
-    with st.expander("部署提醒", expanded=False):
+def render_transaction_steps():
+    with st.expander("此網頁交易流程步驟提示", expanded=False):
         st.markdown(
             """
-            - 這個版本可直接作為 `streamlit_app.py` 部署到 Streamlit Community Cloud。
-            - 若要保留只有你能刪除商品的能力，請在 Streamlit 的 Secrets 設定 `ADMIN_DELETE_KEY`。
-            - 目前資料仍使用 SQLite。本機可正常保存，但在 Streamlit Community Cloud 上，本地資料不保證永久保留。
-            - 如果之後要正式長期上線，建議把 SQLite 換成外部資料庫，例如 Supabase Postgres 或 Neon。
+            1. 賣家先在本站刊登商品，填寫描述、價格與照片。
+            2. 買家透過商品頁面查看內容，並在留言區與賣家確認交易細節。
+            3. 雙方確認成交後，由賣家建立 7-11 賣貨便連結並貼回商品頁面。
+            4. 買家點擊賣貨便連結，跳轉到 7-11 官方頁面完成下單流程。
+            5. 後續寄件、配送與取貨流程由 7-11 賣貨便處理。
             """
         )
 
