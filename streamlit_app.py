@@ -28,6 +28,7 @@ st.set_page_config(
 
 MYSHIP_HOME_URL = "https://myship.7-11.com.tw/Home/Main"
 MYSHIP_CREATE_URL = "https://myship.7-11.com.tw/easy/add"
+MYSHIP_ALLOWED_PREFIX = "https://myship.7-11.com.tw/"
 MAX_PHOTO_COUNT = 5
 MAX_MESSAGE_LENGTH = 500
 MAX_IMAGE_EDGE = 1600
@@ -246,14 +247,17 @@ def normalize_text(value) -> str:
 
 
 def validate_myship_url(raw_url: str):
-    """Only allow official MyShip links."""
+    """Only allow official 7-11 MyShip links with the official prefix."""
     normalized_url = normalize_text(raw_url)
     if not normalized_url:
         return None, ""
 
     parsed = urlparse(normalized_url)
-    if parsed.scheme != "https" or parsed.netloc != "myship.7-11.com.tw":
-        return None, "7-11 賣貨便連結必須使用官方 myship.7-11.com.tw 網址。"
+    has_valid_prefix = normalized_url.startswith(MYSHIP_ALLOWED_PREFIX)
+    has_valid_host = parsed.scheme == "https" and parsed.netloc == "myship.7-11.com.tw"
+
+    if not has_valid_prefix or not has_valid_host:
+        return None, "只允許上傳以 https://myship.7-11.com.tw/ 開頭的 7-11 官方賣貨便連結。"
 
     return normalized_url, ""
 
@@ -385,6 +389,7 @@ def render_sidebar(admin_delete_key: str):
         st.subheader("官方入口")
         st.link_button("前往 7-11 賣貨便首頁", MYSHIP_HOME_URL, use_container_width=True)
         st.link_button("建立賣貨便連結", MYSHIP_CREATE_URL, use_container_width=True)
+        st.caption("只允許使用以 https://myship.7-11.com.tw/ 開頭的 7-11 官方賣貨便連結。")
         st.caption("提醒：Streamlit Community Cloud 上執行時，本地 SQLite 資料不保證永久保留。")
 
     return keyword, category, status
@@ -710,7 +715,6 @@ def main():
     render_hero()
     render_stats(listings)
     render_transaction_steps()
-
 
     form_tab, listings_tab = st.tabs(["刊登商品", "商品列表"])
 
